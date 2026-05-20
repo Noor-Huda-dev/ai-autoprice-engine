@@ -1,0 +1,63 @@
+{% extends 'dresses/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h2 class="card-title text-success mb-3">Order Placed Successfully!</h2>
+                    <p class="lead">Thank you for your purchase from Tariq Worldwide.</p>
+                    <p class="mb-4">Your order <strong>#{{ order.id }}</strong> has been confirmed.</p>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 text-start">
+                            <h5>Shipping Details:</h5>
+                            <p class="mb-1"><strong>Name:</strong> {{ order.shipping_address.full_name }}</p>
+                            <p class="mb-1"><strong>Address:</strong> {{ order.shipping_address.address }}</p>
+                            {% if order.shipping_address.address2 %}
+                            <p class="mb-1">{{ order.shipping_address.address2 }}</p>
+                            {% endif %}
+                            <p class="mb-1">{{ order.shipping_address.city }}, {{ order.shipping_address.state }}</p>
+                            <p class="mb-1">{{ order.shipping_address.postal_code }}, {{ order.shipping_address.country }}</p>
+                            <p class="mb-1"><strong>Phone:</strong> {{ order.shipping_address.phone }}</p>
+                        </div>
+                        <div class="col-md-6 text-start">
+                            <h5>Payment Method:</h5>
+                            <p class="mb-1"><strong>Method:</strong> {{ order.get_payment_method_display }}</p>
+                            <p class="mb-1"><strong>Total Amount:</strong> PKR {{ order.total_price|floatformat:2 }}</p>
+                            <p class="mb-1"><strong>Order Date:</strong> {{ order.order_date|date:"F d, Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <h4 class="text-start mb-3">Order Items:</h4>
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for item in order.orderitems.all %}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-3" style="width: 70px; height: auto;">
+                                {% endif %}
+                                <div class="text-start">
+                                    <strong>{{ item.product.name }}</strong><br>
+                                    <small class="text-muted">Quantity: {{ item.quantity }}{% if item.size %}, Size: {{ item.size }}{% endif %}</small>
+                                </div>
+                            </div>
+                            <span>PKR {{ item.line_total|floatformat:2 }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'home' %}" class="btn btn-dark btn-lg">Continue Shopping</a>
+                        <a href="{% url 'my_orders' %}" class="btn btn-outline-dark mt-2">View My Orders</a>
+                    </div>
+
+                    <p class="mt-4 text-muted small">You will receive an email confirmation shortly with your order details.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

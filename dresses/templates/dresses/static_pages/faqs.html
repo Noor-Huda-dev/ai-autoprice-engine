@@ -1,0 +1,131 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>FAQs | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #ffffff;
+            --medium-gray: #000000;
+            --light-gray: #e0e0e0;
+            --white: #ffffff;
+            --accent: #050505;
+        }
+        
+        .faq-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 15px 20px;
+            background-color: var(--medium-gray);
+            color: var(--white);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 500px;
+        }
+        
+        .faq-category {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+    </style>
+
+    <div class="faq-header">
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="faq-container">
+            <h3 class="faq-category">Orders</h3>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How can I track my order?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>You can track your order using the tracking number sent to your email. Alternatively, visit our Track Order page and enter your order ID.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I modify my order after placing it?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Orders can only be modified within 1 hour of placement. Contact our customer service immediately if you need to make changes.</p>
+                </div>
+            </div>
+            
+            <h3 class="faq-category">Payments</h3>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What payment methods do you accept?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept credit/debit cards (Visa, MasterCard), PayPal, and bank transfers.</p>
+                </div>
+            </div>
+            
+            <h3 class="faq-category">Returns</h3>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I return an item?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Please see our Exchange & Return Policy page for detailed instructions on how to return items.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+                const icon = question.querySelector('span:last-child');
+                icon.textContent = item.classList.contains('active') ? '−' : '+';
+            });
+        });
+    </script>
+ {% endblock %}

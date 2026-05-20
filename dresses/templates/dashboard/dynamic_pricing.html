@@ -1,0 +1,167 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}
+Dynamic Pricing
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <h2 class="fw-bold mb-0">
+        Dynamic Pricing
+    </h2>
+
+    <span class="badge-ai">
+        Machine Learning Active
+    </span>
+
+</div>
+
+<p class="page-subtitle">
+    AI-generated pricing based on demand and product performance
+</p>
+
+<div class="custom-table">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h5 class="fw-bold mb-0">
+            AI Pricing Analysis
+        </h5>
+
+        <small class="text-muted">
+            Auto-updated by ML engine
+        </small>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>PRODUCT</th>
+                    <th>VIEWS</th>
+                    <th>SALES</th>
+                    <th>BASE PRICE</th>
+                    <th>AI PRICE</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for product in products %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="fw-semibold">
+                            {{ product.name }}
+                        </div>
+
+                        <small class="text-muted">
+                            {{ product.category.name }}
+                        </small>
+
+                    </td>
+
+                    <td>
+                        {{ product.product_views }}
+                    </td>
+
+                    <td>
+                        {{ product.sales_count }}
+                    </td>
+
+                    <td>
+
+                        <del>
+                            Rs {{ product.base_price }}
+                        </del>
+
+                    </td>
+
+                    <td class="fw-bold">
+
+                        Rs {{ product.dynamic_price }}
+
+                    </td>
+
+                    <td>
+
+                        {% if product.dynamic_price > product.base_price %}
+
+                            <span class="badge bg-success">
+                                Increased
+                            </span>
+
+                        {% elif product.dynamic_price < product.base_price %}
+
+                            <span class="badge bg-danger">
+                                Discounted
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                Stable
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+<td>
+
+    <form method="POST"
+          action="{% url 'toggle_discount_lock' product.id %}">
+
+        {% csrf_token %}
+
+        <label class="modern-toggle">
+
+            <input type="checkbox"
+                   onchange="this.form.submit()"
+                   {% if product.discount_locked %}checked{% endif %}>
+
+            <span class="toggle-bg"></span>
+
+            <span class="toggle-ball"></span>
+
+            <span class="toggle-label">
+
+                {% if product.discount_locked %}
+                    Locked
+                {% else %}
+                    AI Active
+                {% endif %}
+
+            </span>
+
+        </label>
+
+    </form>
+
+</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

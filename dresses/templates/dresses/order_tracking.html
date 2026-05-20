@@ -1,0 +1,36 @@
+{% extends 'dresses/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Track Your Order</h2>
+  
+  <div class="row align-items-center">
+    <!-- Track by Order ID -->
+    <div class="col-md-5">
+      <form method="GET" action="#">
+        <div class="mb-3">
+          <label for="orderId" class="form-label">Order ID</label>
+          <input type="text" class="form-control" id="orderId" name="order_id" >
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Track</button>
+      </form>
+    </div>
+
+    <!-- OR Separator -->
+    <div class="col-md-2 d-flex justify-content-center">
+      <span class="fw-bold">OR</span>
+    </div>
+
+    <!-- Track by CNIC -->
+    <div class="col-md-5">
+      <form method="GET" action="#">
+        <div class="mb-3">
+          <label for="cnic" class="form-label">CNIC Number</label>
+          <input type="text" class="form-control" id="cnic" name="cnic" >
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Track</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

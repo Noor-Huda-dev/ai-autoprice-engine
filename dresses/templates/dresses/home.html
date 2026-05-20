@@ -1,0 +1,257 @@
+{% extends 'dresses/base.html' %}
+{% load static custom_filters %}
+{% block title %}Home - AI-Autoprice Engine{% endblock %}
+
+{% block content %}
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+  <div class="carousel-inner">
+    {% for i in "12345"|make_list %}
+    <div class="carousel-item {% if forloop.first %}active{% endif %}" style="height: 600px; position: relative;">
+      <img src="{% static 'img/banner-'|add:i|add:'.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide {{ i }}">
+      <div class="position-absolute top-50 end-0 translate-middle-y text-start pe-5" style="z-index: 2; max-width: 40%;">
+        <div class="d-flex flex-column align-items-start">
+          <h2 class="fw-bold text-white fs-1 mb-2" style="white-space: nowrap;">{{ headings|index:forloop.counter0 }}</h2>
+          <h3 class="text-white fs-5 mb-3">{{ subheadings|index:forloop.counter0 }}</h3>
+          <a href="{% url 'shop' %}" class="btn btn-light px-4 py-2 text-black fw-semibold">SHOP NOW</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</div>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">Shop by Category</h2>
+  <div class="category-section">
+    <div class="d-flex align-items-center">
+      <button id="scroll-left" class="scroll-btn me-2">&#10094;</button>
+      <div id="category-scroll" class="scroll-container flex-grow-1 d-flex overflow-auto">
+        {% for category in categories %}
+          {% if category.name %}
+            <div class="category-circle text-center mx-3">
+              <a href="{% url 'shop_by_category' category.name|slugify %}" class="text-decoration-none text-dark">
+                <img class="category-image rounded-circle mb-2" src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 120px; height: 120px; object-fit: cover;">
+                <p class="category-link mb-0">{{ category.name }}</p>
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <button id="scroll-right" class="scroll-btn ms-2">&#10095;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Toggle Button and Sidebar -->
+<div class="container my-4 position-relative">
+  <button id="filterToggleBtn" class="btn btn-dark mb-3">
+    <i class="bi bi-funnel-fill"></i> FILTER
+  </button>
+  <div class="filter-overlay" id="filterOverlay"></div>
+  <div id="filterSidebar" class="sidebar-closed">
+    <button id="closeFilterBtn" class="btn btn-danger" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 24px; color: black; cursor: pointer;">&times;</button>
+    
+    <h2 style="font-size: 24px; margin-top: 18px; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid #ebebeb; width: 80%; font-weight: bold; text-transform: uppercase;">FILTER</h2>
+    
+    <div class="p-3" style="background: white; box-shadow: none;">
+      <form method="get" action="{% url 'home' %}">
+        <div class="mb-3">
+          <label class="form-label" style="font-size: 16px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">Price</label>
+          <input type="range" class="form-range" min="{{ min_price }}" max="{{ max_price }}" value="{{ request.GET.price|default:max_price }}" id="priceRange" name="price">
+          <div class="d-flex justify-content-between">
+            <span>Rs. {{ min_price }}</span>
+            <span id="priceValue">Rs. {{ request.GET.price|default:max_price }}</span>
+            <span>Rs. {{ max_price }}</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size: 16px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">Availability</label>
+          {% for item in availability %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="availability" value="{{ item.label }}" id="avail-{{ forloop.counter }}" {% if item.label in selected_availability %}checked{% endif %}>
+            <label class="form-check-label" for="avail-{{ forloop.counter }}">{{ item.label }} ({{ item.count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size: 16px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">Color</label>
+          {% for c in colors %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="color" value="{{ c.color }}" id="color-{{ forloop.counter }}" {% if c.color in selected_colors %}checked{% endif %}>
+            <label class="form-check-label" for="color-{{ forloop.counter }}">{{ c.color }} ({{ c.count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="font-size: 16px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">Fabric</label>
+          {% for f in fabrics %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="fabric" value="{{ f.fabric }}" id="fabric-{{ forloop.counter }}" {% if f.fabric in selected_fabrics %}checked{% endif %} >
+            <label class="form-check-label" for="fabric-{{ forloop.counter }}">{{ f.fabric }} ({{ f.count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">Apply Filters</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Product List -->
+<div class="col-lg-12 col-md-12">
+  <h2 class="text-center fw-bold my-4" style="font-size: 1.8rem;">Featured Products</h2>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+  {% for product in products %}
+  <div class="product-card" style="position: relative; border: 1px solid #ffffff; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
+
+    <!-- Product Image Wrapper -->
+    <div class="image-wrapper" style="position: relative; overflow: hidden;">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+           class="zoom-image" 
+           style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+
+      {% if product.stock > 0 %}
+    <form method="POST" action="{% url 'product_detail'  product.slug %}" style="display:inline;">
+  {% csrf_token %}
+  <input type="hidden" name="size" value="{{ size }}">
+  <button type="submit" class="cart-icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+              background: transparent; padding: 12px; border: none; display: none; z-index: 2;">
+    <i class="fa fa-shopping-bag" style="color: black;"></i>
+  </button>
+</form>
+  {% else %}
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                width: 80px; height: 80px; background: rgba(255, 255, 255, 0.8); color: black;
+                border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                border: 3px solid black; font-size: 12px; font-weight: bold; text-align: center; z-index: 2;">
+       SOLD OUT
+    </div>
+  {% endif %}
+    </div>
+
+    <!-- Wishlist Icon – just below image -->
+    <a href="{% url 'add_to_wishlist' product.id %}" 
+       style="position: absolute; top: 260px; right: 10px; background: white; padding: 5px; border-radius: 50%; z-index: 2;">
+       <i class="bi bi-heart fs-6" style="color: black;"></i>
+    </a>
+
+    <!-- Product Info -->
+    <div style="padding: 10px;">
+<a href="{% url 'product_detail' product.slug %}" class="text-dark text-decoration-none">
+            {{ product.name }}
+          </a>      <p style="color: #000000; font-weight: bold;">Rs. {{ product.price }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("filterToggleBtn");
+    const sidebar = document.getElementById("filterSidebar");
+    const overlay = document.getElementById("filterOverlay");
+    const closeBtn = document.getElementById("closeFilterBtn");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.add("sidebar-open");
+      sidebar.classList.remove("sidebar-closed");
+      overlay.style.display = "block";
+    });
+
+    closeBtn.addEventListener("click", () => {
+      sidebar.classList.remove("sidebar-open");
+      sidebar.classList.add("sidebar-closed");
+      overlay.style.display = "none";
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("sidebar-open");
+      sidebar.classList.add("sidebar-closed");
+      overlay.style.display = "none";
+    });
+
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+    priceRange?.addEventListener("input", function () {
+      priceValue.textContent = "Rs. " + this.value;
+    });
+  });
+</script>
+
+<style>
+  .category-circle {
+    min-width: 110px; /* Increased from 120px */
+    padding: 10px;
+    transition: transform 0.3s;
+  }
+  
+  .category-circle:hover {
+    transform: scale(1.05);
+  }
+  
+  .category-link {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .scroll-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #2e2a2a;
+  }
+  
+  .scroll-btn:hover {
+    color: #6c6e70;
+  }
+  
+  .scroll-container {
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    display: none; 
+  }
+  #filterSidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background: #fff;
+    z-index: 1050;
+    overflow-y: auto;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  #filterSidebar.sidebar-open {
+    left: 0;
+  }
+
+  .filter-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1040;
+  }
+</style>
+{% endblock %}

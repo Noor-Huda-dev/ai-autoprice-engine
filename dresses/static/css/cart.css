@@ -1,0 +1,164 @@
+/* Styling for the main cart sidebar container */
+#cartSidebar {
+    position: fixed;
+    top: 0;
+    right: -350px; /* Initially hidden off-screen to the right. Adjust width as needed. */
+    width: 350px; /* Width of the sidebar. */
+    height: 100%;
+    background-color: #ffffff; /* White background for the sidebar */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow on the left edge when open */
+    overflow-y: auto; /* Allows scrolling if content is too long */
+    transition: right 0.3s ease-in-out; /* Smooth transition for opening/closing */
+    z-index: 1050; /* Ensures it's above most other elements */
+    padding: 20px;
+    font-family: 'Arial', sans-serif; /* Example font */
+}
+
+/* State when the sidebar is active (open) */
+#cartSidebar.active {
+    right: 0; /* Slides into view */
+}
+
+/* Header styling */
+.cart-sidebar-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-sidebar-header h5 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0;
+}
+
+/* Close button styling */
+#closeCartSidebar {
+    font-size: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.2s ease;
+}
+
+#closeCartSidebar:hover {
+    color: #333;
+}
+
+/* Cart item styling */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0; /* Lighter border for items */
+}
+
+.cart-item:last-child {
+    border-bottom: none; /* No border for the last item */
+}
+
+.cart-item img {
+    width: 80px; /* Larger image size */
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.cart-item h6 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.cart-item small {
+    color: #666;
+}
+
+.cart-item p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0;
+}
+
+/* Quantity controls */
+.cart-item .d-flex.align-items-center.gap-2 {
+    margin-top: 5px;
+}
+
+.cart-item .btn-sm {
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    border-radius: 3px;
+}
+
+.quantity-display {
+    display: inline-block;
+    min-width: 25px;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 8px;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Remove button styling */
+.remove-btn {
+    color: #dc3545; /* Red color for remove */
+    font-size: 20px;
+    transition: color 0.2s ease;
+}
+
+.remove-btn:hover {
+    color: #c82333;
+}
+
+/* Cart footer (total and buttons) */
+.cart-footer {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.cart-footer h6 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #222;
+}
+
+.cart-footer .btn-block {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Scrollbar styling for a nicer look */
+#cartSidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cartSidebar::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 3px;
+}
+
+#cartSidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.cart-sidebar {
+    display: none;
+    /* or position: fixed, etc. */
+}
+
+.cart-sidebar.active {
+    display: block;
+    /* or transform: translateX(0); */
+}
+#cartToggle {
+    display: inline-block; 
+}

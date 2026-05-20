@@ -1,0 +1,192 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}AI Dashboard{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-area">
+
+                <div class="logo-box">
+                    AI
+                </div>
+
+                <div>
+                    <h5 class="mb-0 fw-bold">AI-AutoPrice</h5>
+                    <small class="text-muted">Engine</small>
+                </div>
+
+            </div>
+
+            <!-- MENU -->
+
+           <!-- MENU -->
+
+<div class="menu-section">
+
+    <small class="menu-title">MENU</small>
+
+    <!-- DASHBOARD -->
+
+    <a href="{% url 'ai_dashboard' %}"
+       class="menu-item {% if request.resolver_match.url_name == 'ai_dashboard' %}active-menu{% endif %}">
+        <i class="bi bi-grid"></i>
+        Dashboard
+    </a>
+
+    <!-- PRODUCTS -->
+
+    <a href="{% url 'products_dashboard' %}"
+       class="menu-item {% if request.resolver_match.url_name == 'products_dashboard' %}active-menu{% endif %}">
+        <i class="bi bi-box"></i>
+        Products
+    </a>
+
+    <!-- ORDERS -->
+
+    <a href="{% url 'orders_dashboard' %}"
+       class="menu-item {% if request.resolver_match.url_name == 'orders_dashboard' %}active-menu{% endif %}">
+        <i class="bi bi-bag"></i>
+        Orders
+    </a>
+
+    <!-- CATEGORY -->
+
+    <a href="{% url 'categories_dashboard' %}"
+       class="menu-item {% if request.resolver_match.url_name == 'categories_dashboard' %}active-menu{% endif %}">
+        <i class="bi bi-tags"></i>
+        Categories
+    </a>
+
+    <!-- DYNAMIC PRICING -->
+
+    <a href="{% url 'dynamic_pricing' %}"
+       class="menu-item {% if request.resolver_match.url_name == 'dynamic_pricing' %}active-menu{% endif %}">
+        <i class="bi bi-graph-up-arrow"></i>
+        Dynamic Pricing
+    </a>
+
+</div>
+
+        </div>
+
+        <!-- AI STATUS -->
+
+        <div class="ai-status-card">
+
+            <div class="d-flex align-items-center gap-2">
+
+                <div class="status-dot"></div>
+
+                <small class="fw-semibold">
+                    AI Engine Active
+                </small>
+
+            </div>
+
+            <small class="text-muted">
+                Real-time ML Analysis
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+
+<div class="topbar">
+
+    <div>
+        <small class="text-muted">
+            ML ENGINE
+        </small>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+
+        <!-- REAL TIME -->
+
+        <small class="text-muted" id="live-time">
+            Loading time...
+        </small>
+
+        <!-- USER NAME -->
+
+        <small class="fw-semibold">
+            {{ request.user.username }}
+        </small>
+
+        <!-- PROFILE CIRCLE -->
+
+        <div class="profile-circle">
+            {{ request.user.username|first|upper }}
+        </div>
+
+    </div>
+
+</div>
+
+        <!-- PAGE CONTENT -->
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
+<script>
+
+function updateTime() {
+
+    const now = new Date();
+
+    const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+    };
+
+    document.getElementById('live-time').innerText =
+        now.toLocaleTimeString('en-US', options);
+}
+
+updateTime();
+
+setInterval(updateTime, 1000);
+
+</script>
+</body>
+</html>

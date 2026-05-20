@@ -1,0 +1,534 @@
+{% extends 'dresses/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Custom styles for the numbered steps, if needed */
+    .checkout-step {
+        border: 1px solid #ffffff; /* Bootstrap default card border */
+        border-radius: 0.25rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden; /* To contain border-radius on children */
+    }
+
+    .checkout-step-header {
+        padding: 1rem 1.25rem;
+        background-color: #ffffff; /* Light background for headers */
+        border-bottom: 1px solid #dbdbdb;
+        cursor: pointer; /* Indicate clickable for collapsed steps */
+        display: flex;
+        align-items: center;
+    }
+
+    .checkout-step-header.active {
+        background-color: #ffffff; /* White background for active step */
+        border-bottom: none; /* No border for active step */
+    }
+
+    .checkout-step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #343a40; /* Dark background for active step number */
+        color: #fff;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .checkout-step-header.active .checkout-step-number {
+        background-color: #000; /* Black for active step number */
+    }
+
+    .checkout-step-header.completed .checkout-step-number {
+        background-color: #6c757d; /* Gray for completed step number */
+    }
+
+    .checkout-step-body {
+        padding: 1.25rem;
+    }
+
+    .checkout-step-body.collapsed {
+        display: none; /* Hide collapsed sections */
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .social-icons img {
+        width: 45px;
+        height: 45px;
+        margin: 0 10px;
+    }
+    .read-only-email {
+        background-color: #e9ecef; /* Light gray background */
+        opacity: 0.7; /* Slightly dim it */
+        pointer-events: none; /* Make it unclickable */
+    }
+    /* Add this for the card border */
+    .card {
+        border: 2px solid #dbdbdb !important;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="contact-step" class="checkout-step">
+                <div class="checkout-step-header active" data-step="1">
+                    <span class="checkout-step-number">1</span>
+                    <h4 class="mb-0">Contact Information</h4>
+                    <a href="#" class="ms-auto text-decoration-none" id="edit-contact" style="display: none;">Edit</a>
+                </div>
+                <div class="checkout-step-body">
+                    <div id="guest-contact-form">
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-dark py-2" id="proceed-to-shipping-btn">PROCEED TO SHIPPING</button>
+                        </div>
+                        <p class="text-center mt-3">Already have an account? <a href="#" id="show-login" class="text-decoration-none fw-bold">Sign In</a></p>
+                        <hr>
+                        <h4 class="mb-3 text-center">OR SIGN IN WITH</h4>
+                        <div class="social-icons">
+                            {% load socialaccount %}
+                            <a href="{% provider_login_url 'google' %}"><img src="{% static 'img/googlee.png' %}" alt="Google"></a>
+                            <a href="{% provider_login_url 'facebook' %}"><img src="{% static 'img/facebook.png' %}" alt="Facebook"></a>
+                        </div>
+                    </div>
+
+                    <div id="login-form" style="display: none;">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="login-email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-password" class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="login-password" required>
+                        </div>
+                        <div class="mb-3 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember-me">
+                                <label class="form-check-label" for="remember-me">Remember me</label>
+                            </div>
+                            <a href="#" class="text-decoration-none">Forgot Password?</a>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-dark" id="login-btn">LOGIN</button>
+                            <button class="btn btn-outline-secondary" id="cancel-login">CANCEL</button>
+                        </div>
+                    </div>
+
+                    <div id="read-only-contact-info" style="display: none;">
+                        <p class="mb-1"><strong>Email:</strong> <span id="display-email"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="shipping-step" class="checkout-step">
+                <div class="checkout-step-header" data-step="2">
+                    <span class="checkout-step-number">2</span>
+                    <h4 class="mb-0">Shipping</h4>
+                    <a href="#" class="ms-auto text-decoration-none" id="edit-shipping" style="display: none;">Edit</a>
+                </div>
+                <div class="checkout-step-body collapsed">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" name="first_name" id="firstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" name="last_name" id="lastName" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="address1" class="form-label">Address 1 *</label>
+                            <input type="text" class="form-control" name="address1" id="address1" placeholder="1234 Main St" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="address2" class="form-label">Address 2</label>
+                            <input type="text" class="form-control" name="address2" id="address2" placeholder="Apartment, studio, or floor">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="country" class="form-label">Country *</label>
+                            <select class="form-select" name="country" id="country" required>
+                                <option value="">Choose...</option>
+                                <option value="Pakistan">Pakistan</option>
+                                </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="province" class="form-label">Province *</label>
+                            <input type="text" class="form-control" name="province" id="province" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="city" class="form-label">City *</label>
+                            <input type="text" class="form-control" name="city" id="city" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="postal_code" class="form-label">Postal Code *</label>
+                            <input type="text" class="form-control" name="postal_code" id="postal_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone_number" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" name="phone_number" id="phone_number" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-dark py-2" id="proceed-to-delivery-btn">PROCEED TO DELIVERY OPTIONS</button>
+                    </div>
+                    <div id="read-only-shipping-info" style="display: none;">
+                        <p class="mb-1"><strong>Shipping Address:</strong></p>
+                        <p class="mb-1" id="display-shipping-address"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment-step" class="checkout-step">
+                <div class="checkout-step-header" data-step="3">
+                    <span class="checkout-step-number">3</span>
+                    <h4 class="mb-0">Payment</h4>
+                    <a href="#" class="ms-auto text-decoration-none" id="edit-payment" style="display: none;">Edit</a>
+                </div>
+                <div class="checkout-step-body collapsed">
+                    <form id="payment-form" method="POST" action="{% url 'place_order' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="first_name_hidden" id="firstNameHidden">
+                        <input type="hidden" name="last_name_hidden" id="lastNameHidden">
+                        <input type="hidden" name="address1_hidden" id="address1Hidden">
+                        <input type="hidden" name="address2_hidden" id="address2Hidden">
+                        <input type="hidden" name="country_hidden" id="countryHidden">
+                        <input type="hidden" name="province_hidden" id="provinceHidden">
+                        <input type="hidden" name="city_hidden" id="cityHidden">
+                        <input type="hidden" name="postal_code_hidden" id="postalCodeHidden">
+                        <input type="hidden" name="phone_number_hidden" id="phoneNumberHidden">
+                        <div class="mb-4">
+                            <label for="promoCode" class="form-label">Promo Code</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="promoCode" placeholder="Enter promo code">
+                                <button class="btn btn-outline-secondary" type="button" id="apply-promo">APPLY</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h5>Payment Method</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="cashOnDelivery" value="COD" checked>
+                                <label class="form-check-label" for="cashOnDelivery">Cash On Delivery</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="debitCreditCard" value="CARD">
+                                <label class="form-check-label" for="debitCreditCard">Debit / Credit Card</label>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="billingAddressSame" checked>
+                            <label class="form-check-label" for="billingAddressSame">Billing Address Same as Shipping</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-dark py-2" id="place-order-btn">PLACE YOUR ORDER</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Order Summary ({{ cart_total_quantity }})</h3>
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">{{ item.product.name }}</h5>
+                                    <p class="fw-bold mb-1">PKR {{ item.total_price|floatformat:2 }}</p>
+                                    <p class="text-muted small mb-0">Quantity: {{ item.quantity }}</p>
+                                    {% if item.size %}<p class="text-muted small mb-0">Size: {{ item.size }}</p>{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Your cart is empty.</p>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <h5>ORDER SUMMARY</h5>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between">
+                                <span>Subtotal (Inclusive of Tax)</span>
+                                <span>PKR {{ order.product_total|floatformat:2 }}</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Shipping</span>
+                                <span>PKR {{ order.shipping_cost|floatformat:2 }}</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>FBR POS</span>
+                                <span>PKR 0.00</span> {# Assuming this is a fixed or calculated value not handled by models yet #}
+                            </li>
+                            <li class="d-flex justify-content-between fw-bold mt-2">
+                                <span>Total (PKR)</span>
+                                <span>PKR {{ order.total_price|floatformat:2 }}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info small">
+                        <p>You may receive multiple packages from order. Discounted items are non-exchangeable & non-refundable. Nationwide orders will be delivered within a 7 business days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactStep = document.getElementById('contact-step');
+        const shippingStep = document.getElementById('shipping-step');
+        const paymentStep = document.getElementById('payment-step');
+
+        const guestContactForm = document.getElementById('guest-contact-form');
+        const loginForm = document.getElementById('login-form');
+        const readOnlyContactInfo = document.getElementById('read-only-contact-info');
+        const readOnlyShippingInfo = document.getElementById('read-only-shipping-info');
+
+        const emailInput = document.getElementById('email');
+        const displayEmail = document.getElementById('display-email');
+        const proceedToShippingBtn = document.getElementById('proceed-to-shipping-btn');
+        const showLoginBtn = document.getElementById('show-login');
+        const cancelLoginBtn = document.getElementById('cancel-login');
+        const loginBtn = document.getElementById('login-btn'); // For actual login logic
+
+        // Removed shippingAddressForm variable as it's no longer a separate form submission
+        const proceedToDeliveryBtn = document.getElementById('proceed-to-delivery-btn');
+        const displayShippingAddress = document.getElementById('display-shipping-address');
+
+        const paymentForm = document.getElementById('payment-form');
+        const placeOrderBtn = document.getElementById('place-order-btn'); // Renamed for clarity
+
+        const editContactBtn = document.getElementById('edit-contact');
+        const editShippingBtn = document.getElementById('edit-shipping');
+        const editPaymentBtn = document.getElementById('edit-payment');
+
+        // Shipping input fields
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const address1Input = document.getElementById('address1');
+        const address2Input = document.getElementById('address2');
+        const countryInput = document.getElementById('country');
+        const provinceInput = document.getElementById('province');
+        const cityInput = document.getElementById('city');
+        const postalCodeInput = document.getElementById('postal_code');
+        const phoneNumberInput = document.getElementById('phone_number');
+
+        // Hidden input fields (now inside paymentForm)
+        const firstNameHidden = document.getElementById('firstNameHidden');
+        const lastNameHidden = document.getElementById('lastNameHidden');
+        const address1Hidden = document.getElementById('address1Hidden');
+        const address2Hidden = document.getElementById('address2Hidden');
+        const countryHidden = document.getElementById('countryHidden');
+        const provinceHidden = document.getElementById('provinceHidden');
+        const cityHidden = document.getElementById('cityHidden');
+        const postalCodeHidden = document.getElementById('postalCodeHidden');
+        const phoneNumberHidden = document.getElementById('phoneNumberHidden');
+
+        // Initial state
+        shippingStep.querySelector('.checkout-step-header').classList.add('completed'); // Not active, but numbered
+        paymentStep.querySelector('.checkout-step-header').classList.add('completed'); // Not active, but numbered
+
+        // Helper function to activate a step
+        function activateStep(stepElement) {
+            document.querySelectorAll('.checkout-step').forEach(step => {
+                step.classList.remove('active');
+                step.querySelector('.checkout-step-header').classList.remove('active');
+                step.querySelector('.checkout-step-body').classList.add('collapsed');
+            });
+            stepElement.classList.add('active');
+            stepElement.querySelector('.checkout-step-header').classList.add('active');
+            stepElement.querySelector('.checkout-step-body').classList.remove('collapsed');
+        }
+
+        // Helper function to complete a step (makes header gray and hides body)
+        function completeStep(stepElement, showEditButton = true) {
+            stepElement.querySelector('.checkout-step-header').classList.add('completed');
+            stepElement.querySelector('.checkout-step-header').classList.remove('active');
+            stepElement.querySelector('.checkout-step-body').classList.add('collapsed');
+            if (showEditButton) {
+                stepElement.querySelector('.ms-auto').style.display = 'inline-block';
+            }
+        }
+
+        // Event Listeners for Step Progression
+
+        // 1. Contact Information
+        showLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            guestContactForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            proceedToShippingBtn.style.display = 'none'; // Hide guest button
+            document.querySelector('#guest-contact-form p').style.display = 'none'; // Hide "Already have account?" text
+            document.querySelector('#guest-contact-form hr').style.display = 'none';
+            document.querySelector('#guest-contact-form h4').style.display = 'none';
+            document.querySelector('.social-icons').style.display = 'none';
+        });
+
+        cancelLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            guestContactForm.style.display = 'block';
+            proceedToShippingBtn.style.display = 'block';
+            document.querySelector('#guest-contact-form p').style.display = 'block';
+            document.querySelector('#guest-contact-form hr').style.display = 'block';
+            document.querySelector('#guest-contact-form h4').style.display = 'block';
+            document.querySelector('.social-icons').style.display = 'flex';
+        });
+
+        loginBtn.addEventListener('click', function() {
+            const loginEmail = document.getElementById('login-email').value;
+            const loginPassword = document.getElementById('login-password').value;
+            // TODO: Implement AJAX POST to Django login view
+            // On success:
+            displayEmail.textContent = loginEmail;
+            guestContactForm.style.display = 'none';
+            loginForm.style.display = 'none';
+            readOnlyContactInfo.style.display = 'block';
+            completeStep(contactStep);
+            activateStep(shippingStep);
+        });
+
+        proceedToShippingBtn.addEventListener('click', function() {
+            if (emailInput.checkValidity()) {
+                displayEmail.textContent = emailInput.value;
+                guestContactForm.style.display = 'none';
+                readOnlyContactInfo.style.display = 'block';
+                completeStep(contactStep);
+                activateStep(shippingStep);
+            } else {
+                emailInput.reportValidity(); // Show browser validation message
+            }
+        });
+
+        editContactBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            activateStep(contactStep);
+            guestContactForm.style.display = 'block'; // Or manage login form state appropriately
+            readOnlyContactInfo.style.display = 'none';
+            editContactBtn.style.display = 'none';
+        });
+
+        // 2. Shipping
+        proceedToDeliveryBtn.addEventListener('click', function() {
+            // Check validity of all individual shipping input fields
+            const allShippingInputsValid =
+                firstNameInput.checkValidity() &&
+                lastNameInput.checkValidity() &&
+                address1Input.checkValidity() &&
+                countryInput.checkValidity() &&
+                provinceInput.checkValidity() &&
+                cityInput.checkValidity() &&
+                postalCodeInput.checkValidity() &&
+                phoneNumberInput.checkValidity();
+
+            if (allShippingInputsValid) {
+                // Transfer values from visible inputs to hidden inputs
+                firstNameHidden.value = firstNameInput.value;
+                lastNameHidden.value = lastNameInput.value;
+                address1Hidden.value = address1Input.value;
+                address2Hidden.value = address2Input.value; // address2 might be empty
+                countryHidden.value = countryInput.value;
+                provinceHidden.value = provinceInput.value;
+                cityHidden.value = cityInput.value;
+                postalCodeHidden.value = postalCodeInput.value;
+                phoneNumberHidden.value = phoneNumberInput.value;
+
+                displayShippingAddress.innerHTML = `
+                    ${firstNameInput.value} ${lastNameInput.value}<br>
+                    ${address1Input.value}<br>
+                    ${address2Input.value ? address2Input.value + '<br>' : ''}
+                    ${cityInput.value}, ${provinceInput.value}, ${postalCodeInput.value}<br>
+                    ${countryInput.value}<br>
+                    Phone: ${phoneNumberInput.value}
+                `;
+                readOnlyShippingInfo.style.display = 'block';
+                completeStep(shippingStep);
+                activateStep(paymentStep);
+            } else {
+                // Report validity for the first invalid input found (browser default behavior)
+                // You might need a more sophisticated custom validation display here
+                if (!firstNameInput.checkValidity()) firstNameInput.reportValidity();
+                else if (!lastNameInput.checkValidity()) lastNameInput.reportValidity();
+                else if (!address1Input.checkValidity()) address1Input.reportValidity();
+                else if (!countryInput.checkValidity()) countryInput.reportValidity();
+                else if (!provinceInput.checkValidity()) provinceInput.reportValidity();
+                else if (!cityInput.checkValidity()) cityInput.reportValidity();
+                else if (!postalCodeInput.checkValidity()) postalCodeInput.reportValidity();
+                else if (!phoneNumberInput.checkValidity()) phoneNumberInput.reportValidity();
+            }
+        });
+
+        editShippingBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            activateStep(shippingStep);
+            readOnlyShippingInfo.style.display = 'none';
+            editShippingBtn.style.display = 'none';
+        });
+
+        // 3. Payment
+        // The PLACE YOUR ORDER button submits the form directly.
+        placeOrderBtn.addEventListener('click', function(e) {
+            // Ensure payment method is selected (if default is not enough)
+            // and billing address checkbox handled if it reveals new fields
+            if (!paymentForm.checkValidity()) {
+                e.preventDefault(); // Prevent form submission if invalid
+                paymentForm.reportValidity();
+            }
+            // For actual submission, the form's action handles it.
+        });
+
+        editPaymentBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            activateStep(paymentStep);
+            editPaymentBtn.style.display = 'none';
+        });
+
+        // Optional: If you want to allow clicking on header to activate previous steps
+        document.querySelectorAll('.checkout-step-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const stepNum = this.dataset.step;
+                let targetStep;
+                if (stepNum === '1') targetStep = contactStep;
+                else if (stepNum === '2') targetStep = shippingStep;
+                else if (stepNum === '3') targetStep = paymentStep;
+
+                // Only allow going back to a completed step
+                if (targetStep && this.classList.contains('completed')) {
+                    activateStep(targetStep);
+                    // Hide relevant read-only info and show forms when editing
+                    if (targetStep === contactStep) {
+                        readOnlyContactInfo.style.display = 'none';
+                        guestContactForm.style.display = 'block';
+                        loginForm.style.display = 'none'; // Assume starting from guest form if editing
+                    } else if (targetStep === shippingStep) {
+                        readOnlyShippingInfo.style.display = 'none';
+                        // No specific form ID to show here, as fields are inline
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+{% endblock %}

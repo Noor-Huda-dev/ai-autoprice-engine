@@ -1,0 +1,75 @@
+{% load static %}
+<div id="accountSidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h4>ACCOUNT</h4>
+    <button onclick="closeSidebar()">&times;</button>
+  </div>
+
+  <div class="sidebar-body">
+    <!-- Login Form -->
+    <div id="loginForm">
+      <form method="post" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        <div class="input-wrapper">
+          <input type="email" name="login" placeholder="Email *" required>
+        </div>
+        <div class="input-wrapper">
+          <input type="password" name="password" id="loginPassword" placeholder="Password *" required>
+          <i class="fa fa-eye toggle-icon" id="loginEye" onclick="togglePassword('loginPassword', 'loginEye')"></i>
+        </div>
+        <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+        <button type="submit">SIGN IN</button>
+      </form>
+
+      <p>New to Tariq Worldwide?</p>
+      <button class="switch-btn" onclick="toggleForm()">Create Account</button>
+
+      <hr class="section-divider">
+
+      <p class="or-line">___________ OR SIGN IN WITH ___________</p>
+      <div class="social-icons">
+                {% load socialaccount %}
+      <a href="{% provider_login_url 'google' %}"><img src="{% static 'img/googlee.png' %}" alt="Google" style="width: 45px; height: 45px; margin: 0 10px;"></a>
+        <a href="{% provider_login_url 'facebook' %}"><img src="{% static 'img/facebook.png' %}" alt="Facebook" style="width: 45px; height: 45px; margin: 0 10px;"></a> 
+      </div> 
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" class="hidden">
+      <form method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        <div class="input-wrapper">
+          <input type="text" name="first_name" placeholder="First Name *" required>
+        </div>
+        <div class="input-wrapper">
+          <input type="text" name="last_name" placeholder="Last Name *" required>
+        </div>
+        <div class="input-wrapper">
+          <span class="phone-prefix">+92</span>
+          <input type="tel" name="phone" placeholder="Phone Number *" class="phone-field" required>
+        </div>
+        <div class="input-wrapper">
+            <span class="phone-prefix">+92</span>
+          <input type="tel" name="alt_phone" placeholder="Alternate Phone" class="phone-field">
+        </div>
+        <div class="input-wrapper">
+          <input type="email" name="email" placeholder="Email *" required>
+        </div>
+        <div class="input-wrapper">
+          <input type="email" name="alt_email" placeholder="Alternate Email">
+        </div>
+        <div class="input-wrapper">
+          <input type="password" name="password1" id="signupPassword1" placeholder="Password *" required>
+          <i class="fa fa-eye toggle-icon" id="signupEye1" onclick="togglePassword('signupPassword1', 'signupEye1')"></i>
+        </div>
+        <div class="input-wrapper">
+          <input type="password" name="password2" id="signupPassword2" placeholder="Confirm Password *" required>
+          <i class="fa fa-eye toggle-icon" id="signupEye2" onclick="togglePassword('signupPassword2', 'signupEye2')"></i>
+        </div>
+        <button type="submit">Register</button>
+        <p>Already have an account?</p>
+        <button class="switch-btn" onclick="toggleForm()">Login here</button>
+      </form>
+    </div>
+  </div>
+</div>

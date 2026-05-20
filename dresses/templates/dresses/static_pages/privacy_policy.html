@@ -1,0 +1,88 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>Privacy Policy | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #ffffff;
+            --medium-gray: #818181;
+            --light-gray: #e0e0e0;
+            --white: #ffffff;
+        }
+        
+        .privacy-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+        
+        .privacy-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .privacy-section {
+            margin-bottom: 40px;
+        }
+        
+        .privacy-section h2 {
+            color: var(--white);
+            margin-bottom: 15px;
+        }
+        
+        .privacy-section h3 {
+            color: var(--light-gray);
+            margin: 25px 0 10px;
+        }
+        
+        .update-notice {
+            background-color: var(--medium-gray);
+            padding: 20px;
+            margin: 30px 0;
+            border-left: 4px solid var(--accent);
+        }
+    </style>
+
+    <div class="privacy-header">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="privacy-content">
+            <div class="update-notice">
+                This privacy policy explains how we collect, use, and protect your personal information.
+            </div>
+            
+            <div class="privacy-section">
+                <h2>Information Collection</h2>
+                <p>We collect information when you:</p>
+                <ul>
+                    <li>Place an order on our website</li>
+                    <li>Register an account</li>
+                    <li>Subscribe to our newsletter</li>
+                    <li>Contact customer service</li>
+                </ul>
+            </div>
+            
+            <div class="privacy-section">
+                <h2>Use of Information</h2>
+                <p>Your information is used to:</p>
+                <ul>
+                    <li>Process and fulfill your orders</li>
+                    <li>Improve our products and services</li>
+                    <li>Communicate with you about your orders</li>
+                    <li>Send marketing communications (if opted in)</li>
+                </ul>
+            </div>
+            
+            <div class="privacy-section">
+                <h2>Data Security</h2>
+                <p>We implement security measures to protect your personal information. All transactions are processed through a secure payment gateway.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

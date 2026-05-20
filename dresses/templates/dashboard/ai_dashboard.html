@@ -1,0 +1,361 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}
+AI Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+
+<div class="page-heading">
+
+    <h2 class="fw-bold mb-0">
+        Dashboard
+    </h2>
+
+    <span class="badge-ai">
+        AI AutoPrice Engine
+    </span>
+
+</div>
+
+<p class="page-subtitle">
+    Overview of your product catalog and ML pricing insights
+</p>
+
+<!-- STATS -->
+
+<div class="stats-grid">
+
+    <!-- TOTAL PRODUCTS -->
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div>
+
+                <small class="text-muted">
+                    TOTAL PRODUCTS
+                </small>
+
+                <h2 class="fw-bold mt-2">
+                    {{ total_products }}
+                </h2>
+
+            </div>
+
+            <div class="stat-icon bg-pink">
+                <i class="bi bi-box"></i>
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            Active in catalog
+        </small>
+
+    </div>
+
+    <!-- LOW STOCK -->
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div>
+
+                <small class="text-muted">
+                    LOW STOCK ALERTS
+                </small>
+
+                <h2 class="fw-bold mt-2">
+                    3
+                </h2>
+
+            </div>
+
+            <div class="stat-icon bg-red">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            Need restocking
+        </small>
+
+    </div>
+
+    <!-- REVENUE -->
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div>
+
+                <small class="text-muted">
+                    REVENUE POTENTIAL
+                </small>
+
+                <h2 class="fw-bold mt-2">
+                    Rs {{ highest_price.dynamic_price }}
+                </h2>
+
+            </div>
+
+            <div class="stat-icon bg-green">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+
+        </div>
+
+        <small class="text-success fw-semibold">
+            +25%
+        </small>
+
+    </div>
+
+    <!-- AI -->
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div>
+
+                <small class="text-muted">
+                    ML OPTIMIZATIONS
+                </small>
+
+                <h2 class="fw-bold mt-2">
+                    AI
+                </h2>
+
+            </div>
+
+            <div class="stat-icon bg-pink">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            AI suggestions ready
+        </small>
+
+    </div>
+
+</div>
+
+<!-- PRODUCTS TABLE -->
+
+<div class="custom-table">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h5 class="fw-bold mb-0">
+            Recent Products
+        </h5>
+
+        <small class="text-muted">
+            Last updated: Today
+        </small>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>PRODUCT</th>
+                    <th>CATEGORY</th>
+                    <th>STOCK</th>
+                    <th>DEMAND</th>
+                    <th>BASE PRICE</th>
+                    <th>CURRENT PRICE</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for product in trending_products %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="fw-semibold">
+                            {{ product.name }}
+                        </div>
+
+                        <small class="text-muted">
+                            {{ product.fabric }}
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-danger-subtle text-danger">
+                            {{ product.category.name }}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if product.stock < 10 %}
+
+                            <span class="text-danger fw-semibold">
+                                {{ product.stock }} Low
+                            </span>
+
+                        {% else %}
+
+                            <span class="fw-semibold">
+                                {{ product.stock }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <div class="demand-bar">
+
+                                <div class="demand-fill"
+                                     data-width="{% firstof product.sales_count 0 %}">
+                                </div>
+
+                            </div>
+
+                            <small>
+                                {% firstof product.sales_count 0 %}%
+                            </small>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        Rs {{ product.base_price }}
+                    </td>
+
+                    <td class="fw-bold">
+                        Rs {{ product.dynamic_price }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- CHART -->
+
+<div class="chart-card mt-4 p-4 bg-white rounded shadow-sm">
+
+    <h5 class="fw-bold mb-4">
+        AI Dynamic Pricing Trends
+    </h5>
+
+    <canvas id="priceChart"></canvas>
+
+</div>
+
+<!-- DEMAND BAR SCRIPT -->
+
+<script>
+
+document.querySelectorAll('.demand-fill').forEach(function(bar) {
+
+    let width = parseInt(bar.getAttribute('data-width'));
+
+    if (width > 100) {
+        width = 100;
+    }
+
+    bar.style.width = width + '%';
+
+});
+
+</script>
+
+<!-- CHART JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{{ labels|json_script:"labels-data" }}
+{{ prices|json_script:"prices-data" }}
+
+<script>
+
+const labels = JSON.parse(
+    document.getElementById('labels-data').textContent
+);
+
+const prices = JSON.parse(
+    document.getElementById('prices-data').textContent
+);
+
+const ctx = document.getElementById('priceChart');
+
+new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: labels,
+
+        datasets: [{
+
+            label: 'Dynamic Price',
+
+            data: prices,
+
+            borderWidth: 3,
+
+            tension: 0.4
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+                beginAtZero: false
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

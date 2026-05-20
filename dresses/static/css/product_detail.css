@@ -1,0 +1,36 @@
+.carousel-wrapper {
+  position: relative;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.carousel-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px;
+}
+
+.product-card {
+  flex: 0 0 auto;
+  width: 200px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 5px;
+}
+
+#scroll-left { left: 0; }
+#scroll-right { right: 0; }

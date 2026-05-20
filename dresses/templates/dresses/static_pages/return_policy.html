@@ -1,0 +1,99 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>Return Policy | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #ffffff;
+            --medium-gray: #cecece;
+            --light-gray: #000000;
+            --white: #000000;
+            --accent: #030303;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--black);
+            color: var(--light-gray);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .policy-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: var(--white);
+            font-size: 1.8rem;
+            margin-top: 30px;
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 10px;
+        }
+        
+        .policy-section {
+            background-color: var(--dark-gray);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .highlight-box {
+            background-color: var(--medium-gray);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+
+    <div class="policy-header">
+        <div class="container">
+            <h1>Exchange & Return Policy</h1>
+            <p>Last Updated: 31 May 2025</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="policy-section">
+            <h2>Our Return Policy</h2>
+            <p>We offer a 14-day return policy from the date of purchase. To be eligible for a return:</p>
+            <ul>
+                <li>Item must be unused and in original condition</li>
+                <li>Original tags must be attached</li>
+                <li>Must include original packaging</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <strong>Note:</strong> Final sale items and intimate apparel cannot be returned.
+            </div>
+        </div>
+        
+        <div class="policy-section">
+            <h2>Exchange Process</h2>
+            <ol>
+                <li>Contact customer service within 14 days of delivery</li>
+                <li>Provide order number and photos of item</li>
+                <li>We'll email you a return authorization</li>
+                <li>Ship item back to us within 7 days</li>
+                <li>We'll process your exchange once received</li>
+            </ol>
+        </div>
+    </div>
+    {% endblock %}

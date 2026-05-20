@@ -1,0 +1,51 @@
+{% load custom_filters %}
+
+<div style="font-family: Arial, sans-serif; height: 100%; display: flex; flex-direction: column;">
+
+    {% if items %}
+        <div style="flex: 1; overflow-y: auto;">
+            {% for item in items %}
+                {% with product=item.product quantity=item.quantity size=item.size %}
+                    {% with line_total=product.price|mul:quantity %}
+                        <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 80px; height: 90px; object-fit: cover; border-radius: 0;">
+                                <div style="flex: 1;">
+                                    <p style="font-weight: bold; margin-bottom: 5px;">{{ product.name }}</p>
+                                    <p style="font-size: 13px; color: #666; margin-bottom: 5px;">{{ size|default:"N/A" }}</p>
+                                    <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px;">
+                                        <a href="{% url 'decrease_quantity_with_size' product.slug size %}" class="btn btn-sm btn-outline-secondary decrease-btn" style="background: #000; color: #fff; padding: 0 8px; text-decoration: none;">-</a>
+                                        <span>{{ quantity }}</span>
+                                        <form method="POST" action="{% url 'add_to_cart' product.slug %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="size" value="{{ size }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary increase-btn" style="background: #000; color: #fff; padding: 0 8px; border: none; cursor: pointer;">+</button>
+                                        </form>
+                                    </div>
+                                    <p style="font-weight: bold;">Rs. {{ line_total }}</p>
+                                </div>
+                                <a href="{% url 'remove_from_cart_with_size' product.slug size %}" class="remove-btn" style="color: #999; text-decoration: none;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div style="padding: 15px 0; position: sticky; bottom: 0; background: white;">
+            <p style="text-align: right; font-weight: bold; font-size: 16px; margin-bottom: 10px;">
+                Total: Rs. {{ total }}
+            </p>
+            <a href="{% url 'checkout' %}" style="display: block; background: #000; color: #fff; text-align: center; padding: 10px; text-decoration: none; font-weight: bold;">
+                CHECKOUT
+            </a>
+        </div>
+
+    {% else %}
+        <p style="text-align: center; color: #666; margin-top: 20px;">Your cart is empty.</p>
+    {% endif %}
+
+</div>

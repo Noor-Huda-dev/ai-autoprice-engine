@@ -1,0 +1,98 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>Payments | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #818181;
+            --medium-gray: #ffffff;
+            --light-gray: #f0f0f0;
+            --white: #ffffff;
+            --accent: #000000;
+        }
+        
+        .payments-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--medium-gray);
+            margin-bottom: 30px;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .payment-card {
+            background-color: var(--dark-gray);
+            padding: 25px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .payment-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+        }
+        
+        .payment-content h3 {
+            margin: 0 0 10px;
+            color: var(--white);
+        }
+        
+        .security-section {
+            background-color: var(--light-gray);
+            padding: 40px;
+            margin: 50px 0;
+            border-radius: 5px;
+        }
+    </style>
+
+    <div class="payments-header">
+        <div class="container">
+            <h1>Payment Options</h1>
+            <p>Secure payment methods for your convenience</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <section>
+            <h2>Accepted Payment Methods</h2>
+            
+            <div class="payment-methods">
+                <div class="payment-card">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-content">
+                        <h3>Credit/Debit Cards</h3>
+                        <p>Visa, MasterCard, American Express</p>
+                    </div>
+                </div>
+                
+                <div class="payment-card">
+                    <div class="payment-icon">🔵</div>
+                    <div class="payment-content">
+                        <h3>PayPal</h3>
+                        <p>Secure payments through PayPal</p>
+                    </div>
+                </div>
+                
+                <div class="payment-card">
+                    <div class="payment-icon">🏦</div>
+                    <div class="payment-content">
+                        <h3>Bank Transfer</h3>
+                        <p>Direct transfers to our bank account</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="security-section">
+            <h2>Payment Security</h2>
+            <p>All transactions are processed through secure payment gateways with encryption. We do not store your credit card information on our servers.</p>
+        </section>
+    </div>
+{% endblock %}

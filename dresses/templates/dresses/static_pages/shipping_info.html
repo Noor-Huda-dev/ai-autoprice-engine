@@ -1,0 +1,101 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>Shipping Information | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #ffffff;
+            --medium-gray: #ffffff;
+            --light-gray: #e0e0e0;
+            --white: #000000;
+        }
+        
+        .shipping-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+        
+        .shipping-section {
+            background-color: var(--dark-gray);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .shipping-section h2 {
+            color: var(--white);
+            margin-top: 0;
+        }
+        
+        .shipping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .shipping-table th, 
+        .shipping-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .shipping-table th {
+            background-color: var(--medium-gray);
+            color: var(--white);
+        }
+    </style>
+
+    <div class="shipping-header">
+        <div class="container">
+            <h1>Shipping Information</h1>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="shipping-section">
+            <h2>Domestic Shipping</h2>
+            <p>We ship nationwide via courier services. Delivery times vary by location:</p>
+            
+            <table class="shipping-table">
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>Delivery Time</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lahore</td>
+                        <td>1-2 business days</td>
+                        <td>Rs. 200</td>
+                    </tr>
+                    <tr>
+                        <td>Other Major Cities</td>
+                        <td>2-3 business days</td>
+                        <td>Rs. 300</td>
+                    </tr>
+                    <tr>
+                        <td>Remote Areas</td>
+                        <td>3-5 business days</td>
+                        <td>Rs. 500</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="shipping-section">
+            <h2>International Shipping</h2>
+            <p>We ship worldwide with delivery times varying by destination. Please contact us for international shipping rates.</p>
+        </div>
+        
+        <div class="shipping-section">
+            <h2>Order Processing</h2>
+            <p>Orders are processed within 1-2 business days. You will receive a confirmation email with tracking information once your order ships.</p>
+        </div>
+    </div>
+{% endblock %}

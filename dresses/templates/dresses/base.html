@@ -1,0 +1,425 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TariqWorldWide{% endblock %}</title>
+
+  <!-- Bootstrap CSS and Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" href="{% static 'dresses/images/favicon.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth_sidebar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
+
+
+  <style>
+  
+  .wishlist-sidebar {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1050;
+    padding: 25px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .wishlist-sidebar .h5{
+    background-color: #000000;
+  }
+   
+  .wishlist-sidebar #wishlist-items .wishlist-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  .wishlist-sidebar.show {
+    right: 0;
+  }
+
+  .wishlist-close {
+    font-size: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    float: right;
+    color: #333;
+    transition: color 0.2s ease;
+  }
+  .wishlist-close:hover {
+    color: #e91e63;
+  }
+
+  .wishlist-items {
+    margin-top: 50px;
+  }
+
+  .wishlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    margin-top: 35px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .wishlist-item a {
+    flex-grow: 1;
+    font-weight: 600;
+    color: #222;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  .wishlist-item-remove {
+    background: none;
+    background-color: #fff;
+    border: none;
+    color: #e91e63;
+    font-size: 22px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .wishlist-item-remove:hover {
+    color: #000000;
+    background-color: #f8f9fa;
+  }
+
+  .wishlist-toggle {
+    position: relative;
+  }
+
+  .badge {
+    background: #000000;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 9px;
+    font-size: 13px;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-weight: 700;
+  }
+
+  .wishlist-toggle i.bi-heart {
+    color: black; 
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+  }
+  .wishlist-toggle i.bi-heart:hover {
+    color: #e91e63; 
+  }
+
+  .wishlist-toggle a {
+    background-color: white;
+    border-radius: 50%;
+    padding: 6px 8px;
+    display: inline-block;
+  }
+
+  .wishlist-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.wishlist-sidebar::-webkit-scrollbar-thumb {
+  background-color: #e91e63;
+  border-radius: 3px;
+}
+.wishlist-sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.wishlist-header h5 {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  margin: 0;
+  flex-grow: 1; 
+}
+
+.wishlist-close {
+  font-size: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #333;
+  margin-left: 15px;
+  padding-bottom: 8px; /* height adjustment */
+  align-self: flex-start; /* thoda upar align karne ke liye */
+  transition: color 0.2s ease;
+}
+
+.wishlist-close:hover {
+  color: #8a8a8a;
+}
+
+</style>
+
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+    <div class="container d-flex align-items-center justify-content-between" style="border-bottom: 1px solid #dee2e6;">
+      <a class="navbar-brand fw-bold text-dark" href="{% url 'home' %}">
+        <img src="{% static 'img/logo.png' %}" alt="TariqWorldWide" style="height: 120px;">
+      </a>
+
+      <form class="mx-auto w-50" action="{% url 'shop' %}" method="get">
+        <div class="input-group">
+          <input 
+            type="search" 
+            class="form-control rounded-start" 
+            name="q" 
+            placeholder="FIND YOUR FAVOURITES" 
+            style="background-color: #ffffff; border: 1px solid #ccc; box-shadow: none;"
+            onfocus="this.style.backgroundColor='#f8f9fa'; this.style.color='black';" 
+            onblur="this.style.backgroundColor='#ffffff'; this.style.color='black';"
+          />
+          <button 
+            class="btn btn-outline-dark rounded-end" 
+            type="submit" 
+            style="background: none; border: 1px solid #ccc;">
+            <i class="bi bi-search" style="color: black;"></i>
+          </button>
+        </div>
+      </form>
+
+      <!-- Compact Icon Group -->
+      <div class="d-flex align-items-center" style="gap: 8px;">
+        <!-- Order Tracking -->
+        <a class="text-dark position-relative mx-1" href="{% url 'order_tracking' %}" title="Track Order" style="font-size: 1.3rem;">
+          <i class="bi bi-truck"></i>
+        </a>
+
+        <!-- Login/Logout -->
+        {% if user.is_authenticated %}
+          <a class="text-dark mx-1" href="{% url 'account_logout' %}" title="Logout" style="font-size: 1.3rem;">
+            <i class="bi bi-box-arrow-right"></i>
+          </a>
+        {% else %}
+          <button onclick="openSidebar()" style="background:none; border:none; font-size: 1.3rem;" class="text-dark mx-1" title="Account">
+            <i class="bi bi-person"></i>
+          </button>
+        {% endif %}
+    <div id="cartSidebarContainer">
+  <a id="cartToggle" class="text-dark position-relative mx-1" href="javascript:void(0);" title="Cart" style="font-size: 1.3rem;">
+    <i class="bi bi-cart" ></i>
+    <span id="cart-count" style="
+      position: absolute;
+      top: -9px;
+      right: -8px;
+      background-color: black;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 1px 5px;
+      border-radius: 50%;
+      border: 2px solid white;
+      line-height: 1;
+    ">
+      {{ cart_count }}
+    </span>
+  </a>
+  
+  <div id="cartSidebar" class="cart-sidebar">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+        <h2 style="font-size: 18px; font-weight: bold; margin: 0; text-transform: uppercase;">
+            My Cart
+        </h2>
+        <button id="closeCartSidebar" class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0; margin: 0; line-height: 1;">
+            &times;
+        </button>
+    </div>
+    <div id="cartDynamicContent">
+      <p>Loading cart...</p> 
+    </div>
+  </div>
+</div>
+        <!-- Wishlist -->
+        <a href="#" id="wishlistToggle" class="text-dark position-relative mx-1" title="Wishlist" style="font-size: 1.3rem;">
+          <i class="bi bi-heart"></i>
+          <span id="wishlist-count" class="badge bg-dark rounded-circle position-absolute" style="top: -8px; right: -8px; font-size: 0.6rem; padding: 2px 4px;">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</header>
+
+<!-- Main Content -->
+<main class="py-4">
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- Wishlist Sidebar -->
+<div id="wishlist-sidebar" class="wishlist-sidebar" >
+  <div class="wishlist-header d-flex align-items-center justify-content-between mb-3">
+  <h5>Your Wishlist</h5>
+  <button id="wishlist-close" class="wishlist-close">&times;</button>
+</div><div id="wishlist-items"></div>
+ </div>
+</div>
+
+<!-- Footer -->
+<!-- Footer -->
+<footer class="bg-light text-dark pt-5 pb-3">
+  <div class="container">
+    <div class="row gy-4">
+      <!-- Contact Us Column -->
+      <div class="col-md-3 pe-4">
+        <h6 class="mb-3 fw-bold">CONTACT US</h6>
+        <div class="mb-3">
+          <p class="mb-2" style="line-height: 1.6;">
+            <i class="bi bi-geo-alt-fill me-2 text-dark"></i>
+            AI-AutoPrice Engine Retail Office,<br>
+            <span style="margin-left: 24px;">1.5-Km, Defence Road,</span><br>
+            <span style="margin-left: 24px;">Bhobtian Chowk, Lahore.</span>
+          </p>
+          <p class="mb-2" style="line-height: 1.6;">
+            <i class="bi bi-envelope-fill me-2 text-dark"></i>
+            <a href="mailto:support@aiautoprice.pk" class="text-dark text-decoration-none">support@tariqworldwide.pk</a>
+          </p>
+          <p style="line-height: 1.6;">
+            <i class="bi bi-telephone-fill me-2 text-dark"></i>
+            +92 (0)42 111-000-000
+          </p>
+        </div>
+      </div>
+
+      <!-- Customer Care Column -->
+      <div class="col-md-3 px-3">
+        <h6 class="mb-3 fw-bold">CUSTOMER CARE</h6>
+        <ul class="list-unstyled" style="line-height: 2.2;">
+          <li><a href="{% url 'return_policy' %}" class="text-dark text-decoration-none">Exchange & Return Policy</a></li>
+          <li><a href="{% url 'faqs' %}" class="text-dark text-decoration-none">FAQs</a></li>
+          <li><a href="{% url 'contact' %}" class="text-dark text-decoration-none">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Information Column -->
+      <div class="col-md-3 px-3">
+        <h6 class="mb-3 fw-bold">INFORMATION</h6>
+        <ul class="list-unstyled" style="line-height: 2.2;">
+          <li><a href="{% url 'about' %}" class="text-dark text-decoration-none">About Us</a></li>
+          <li><a href="{% url 'privacy_policy' %}" class="text-dark text-decoration-none">Privacy Policy</a></li>
+          <li><a href="{% url 'payment_info' %}" class="text-dark text-decoration-none">Payments</a></li>
+          <li><a href="{% url 'shipping_info' %}" class="text-dark text-decoration-none">Shipping Info</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter Column -->
+      <div class="col-md-3 ps-4">
+        <h6 class="mb-3 fw-bold">NEWSLETTER SIGNUP</h6>
+        <form method="post" action="{% url 'newsletter_signup' %}">
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Your email address" required>
+            <button class="btn btn-dark" type="submit">Subscribe</button>
+          </div>
+        </form>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-success mt-2 mb-3">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+        <div class="social-icons mt-4">
+          <a href="#" class="text-dark me-3"><i class="bi bi-facebook fs-5"></i></a>
+          <a href="#" class="text-dark me-3"><i class="bi bi-instagram fs-5"></i></a>
+          <a href="#" class="text-dark me-3"><i class="bi bi-youtube fs-5"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="border-top mt-4 pt-3 d-flex justify-content-between align-items-center">
+      <small class="text-muted">&copy; 2025 AI-AutoPrice Engine. All rights reserved.</small>
+      <div class="d-flex gap-3">
+        <img src="{% static 'img/mastercard.jpeg' %}" alt="Mastercard" height="40" style="border-radius: 6px; object-fit: contain;">
+        <img src="{% static 'img/visa.png' %}" alt="Visa" height="40" style="border-radius: 6px; object-fit: contain;">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .hover-primary:hover {
+    color: #818181 !important;
+    transition: color 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+  }
+  
+  .input-group .form-control:focus {
+    box-shadow: none;
+    border-color: #ffffff;
+  }
+  
+  .btn-dark:hover {
+    background-color: #808080 !important;
+  }
+</style>
+{% include 'dresses/partials/account_sidebar.html' %}
+
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+<script src="{% static 'js/wishlist.js' %}"></script>
+
+<script src="{% static 'js/product-detail.js' %}"></script>
+
+<script src="{% static 'js/cart-toggle.js' %}"></script>
+
+<script src="{% static 'js/cart.js' %}"></script>
+
+<script src="{% static 'js/auth_sidebar.js' %}" defer></script>
+
+<script>
+ window.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('showLogin') === 'true') {
+      openSidebar(); 
+    }
+
+    if (urlParams.get('subscribed') === 'true') {
+      alert("Thanks for subscribing to our newsletter!");
+    }
+
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

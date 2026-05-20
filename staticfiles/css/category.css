@@ -1,0 +1,80 @@
+/* CATEGORY CIRCLE SCROLL SECTION */
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 1rem;
+  padding-bottom: 10px;
+}
+
+.scroll-btn {
+  border: none;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
+}
+
+.scroll-btn:hover {
+  background-color: #ddd;
+}
+
+.category-circle {
+  width: 100px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.category-circle img.category-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #e91e63;
+  transition: transform 0.3s ease;
+}
+
+.category-circle:hover img.category-image {
+  transform: scale(1.1);
+}
+
+.category-link {
+  margin-top: 8px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+}
+
+/* TRENDING TAGS */
+.trending-tags button {
+  background-color: white;
+  border: 1px solid #e91e63;
+  color: #e91e63;
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.trending-tags button:hover {
+  background-color: #e91e63;
+  color: white;
+}
+
+/* PRODUCT CARDS */
+.card img {
+  object-fit: cover;
+  height: 250px;
+}
+
+.card {
+  border: 1px solid #f0f0f0;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}

@@ -1,0 +1,105 @@
+{% extends "dresses/base.html" %}
+
+{% block content %}
+    <title>About Us | Tariq Worldwide</title>
+    <style>
+        :root {
+            --black: #ffffff;
+            --dark-gray: #ffffff;
+            --medium-gray: #818181;
+            --light-gray: #e0e0e0;
+            --white: #ffffff;
+            --accent: #000000;
+        }
+        
+        .about-header {
+            text-align: center;
+            padding: 60px 0;
+            background-color: var(--dark-gray);
+            margin-bottom: 40px;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        
+        .values-section {
+            background-color: var(--dark-gray);
+            padding: 40px;
+            margin-bottom: 60px;
+            border-radius: 5px;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .value-card {
+            background-color: var(--medium-gray);
+            padding: 25px;
+            border-radius: 5px;
+        }
+        
+        .value-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+    </style>
+
+    <div class="about-header">
+        <div class="container">
+            <h1>About TarigWorldWide</h1>
+            <p>Our story and values</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <section class="about-content">
+            <div>
+                <h2>Our Story</h2>
+                <p>Founded in Lahore, TarigWorldWide began as a small boutique and has grown into a premier fashion destination. We specialize in high-quality unstitched fabrics and party wear collections.</p>
+                <p>Our journey started at Bhobtian Chowk and we've since expanded our retail presence across Pakistan while maintaining our commitment to quality and customer satisfaction.</p>
+            </div>
+            <div class="about-image">
+                <img src="../../../static/img/store-image.jpg" alt="Our store">
+            </div>
+        </section>
+        
+        <section class="values-section">
+            <h2>Our Values</h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>Quality</h3>
+                    <p>We source only the finest fabrics and materials for our collections.</p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>Customer First</h3>
+                    <p>Your satisfaction is our top priority in every interaction.</p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>Authenticity</h3>
+                    <p>We stay true to traditional craftsmanship while embracing modern designs.</p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>Innovation</h3>
+                    <p>Continuously evolving our designs to set new fashion trends.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

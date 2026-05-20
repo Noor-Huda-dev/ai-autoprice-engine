@@ -1,0 +1,223 @@
+{% extends 'dresses/base.html' %}
+
+{% block content %}
+
+<style>
+  #category-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  #category-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Blue underline hatane ke liye */
+  #category-scroll a {
+    text-decoration: none;
+  }
+
+  /* Trending tags ko neeche separate row mein dikhane ke liye */
+  .trending-tags {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .trending-tags button {
+    background: rgb(255, 255, 255);
+    color: #ffffff;
+    border: 1px solid #e91e63;
+    border-radius: 30px;
+    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .sold-out-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgb(0, 0, 0);
+  border-radius: 50%;
+  display: none; /* Hide by default */
+  align-items: center;
+  justify-content: center;
+  border: 3px solid black;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  z-index: 2;
+}
+
+.product-card:hover .sold-out-badge {
+  display: flex; /* Show on hover */
+}
+
+</style>
+
+<div style="padding: 30px; background-color: #fff;">
+  <div style="margin-bottom: 15px;">
+  {% if not subcategory %}
+    <a href="{% url 'shop_by_category' category.slug %}"
+       style="display: inline-block; margin: 5px; padding: 6px 14px; text-decoration: none;
+              color: rgb(0, 0, 0); font-weight: bold; font-size: 17px; border-bottom: 3px solid rgb(112, 112, 112);">
+      All {{ category.name }}
+    </a>
+  {% else %}
+    <a href="{% url 'shop_by_category' category.slug %}"
+       style="display: inline-block; margin: 5px; padding: 6px 14px; text-decoration: none;
+              color: rgb(0, 0, 0); font-weight: bold; font-size: 17px;">
+      All {{ category.name }}
+  </a>
+  {% endif %}
+
+  <!-- Loop through subcategories -->
+  {% for sub in subcategories %}
+    {% if subcategory and sub.slug == subcategory.slug %}
+      <a href="{% url 'shop_by_subcategory' category.slug sub.slug %}"
+         style="display: inline-block; margin: 5px; padding: 6px 14px;
+                text-decoration: none;
+              color: rgb(0, 0, 0); font-weight: bold; font-size: 17px; border-bottom: 3px solid rgb(112, 112, 112);">
+        {{ sub.name }}
+      </a>
+    {% else %}
+      <a href="{% url 'shop_by_subcategory' category.slug sub.slug %}"
+         style="display: inline-block; margin: 1px; padding: 6px 14px;
+               text-decoration: none;
+              color: rgb(0, 0, 0); font-weight: bold; font-size: 17px; ">
+        {{ sub.name }}
+      </a>
+    {% endif %}
+  {% endfor %}
+
+   </div>
+
+   </div>
+   
+
+
+  <!-- Category Title + Scroll Buttons -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+    <h2 style="font-weight: bold; color: #000000; margin: 0;">{{ category.name }}</h2>
+
+    <div style="display: flex; align-items: center; gap: 10px; position: relative;">
+      <!-- Left Button -->
+      <button id="scroll-left" style="cursor:pointer; border: none; background-color: transparent; font-size: 30px;">&#10094;</button>
+
+      <!-- Scroll Container -->
+      <div id="category-scroll" style="display: flex; overflow-x: hidden; scroll-behavior: smooth; gap: 20px; width: 935px;">
+        {% for category in categories %}
+        <div style="flex: 0 0 auto; text-align: center;">
+          <a href="{% url 'shop_by_category' category.slug %}">
+            <img src="{{ category.image.url }}" alt="{{ category.name }}"
+                 style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+            <p style="margin-top: 5px; font-weight: bold; color: #000;">{{ category.name }}</p>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Right Button -->
+      <button id="scroll-right" style="cursor:pointer; border: none; background-color: transparent; font-size: 30px;">&#10095;</button>
+    </div>
+  </div>
+
+  <!-- Trending Tags -->
+<div class="trending-tags" style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+  <h5 style="font-weight: bolder; color: #000;margin-right: 15px;">Trending</h5>
+  {% for tag in trending_tags %}
+    <button style="background: rgb(0, 0, 0); color: #ffffff; border: 1px solid #ffffff; border-radius: 20px; padding: 3px 15px; font-size: 12px; cursor: pointer;">
+      {{ tag.name }}
+    </button>
+  {% endfor %}
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+  {% for product in products %}
+  <div class="product-card" style="position: relative; border: 1px solid #ffffff; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
+
+    <!-- Product Image Wrapper -->
+    <div class="image-wrapper" style="position: relative; overflow: hidden;">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+           class="zoom-image" 
+           style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+
+      {% if product.stock > 0 %}
+        <!-- Add to Cart icon - CENTER -->
+        <a href="{% url 'product_detail'  product.slug %}" 
+           class="cart-icon"
+           style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                  background: transparent rgba(255, 255, 255, 0.9); padding: 12px; border-radius: 50%; display: none; z-index: 2;">
+          <i class="fa fa-shopping-bag" style="color: black;"></i>
+        </a>
+      {% else %}
+        <!-- Sold Out Badge -->
+       <div class="sold-out-badge">
+   SOLD OUT
+</div>
+
+      {% endif %}
+    </div>
+
+    <!-- Wishlist Icon – just below image -->
+    <a href="{% url 'add_to_wishlist' product.id %}" 
+       style="position: absolute; top: 260px; right: 10px; background: white; padding: 5px; border-radius: 50%; z-index: 2;">
+       <i class="bi bi-heart fs-6" style="color: black;"></i>
+    </a>
+
+    <!-- Product Info -->
+    <div style="padding: 10px;">
+<a href="{% url 'product_detail' product.slug %}" class="text-dark text-decoration-none">
+            {{ product.name }}
+          </a>      <p style="color: #000000; font-weight: bold;">Rs. {{ product.price }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<style>
+  .product-card:hover {
+    transform: scale(1.03);
+  }
+
+  .product-card:hover .cart-icon {
+    display: block !important;
+  }
+
+.product-card:hover .zoom-image {
+  transform: scale(1.1);
+}
+
+.product-card:hover .cart-icon {
+  display: block;
+}
+
+
+</style>
+
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const scrollContainer = document.getElementById("category-scroll");
+    const scrollAmount = 200;
+
+    document.getElementById("scroll-left").addEventListener("click", () => {
+      scrollContainer.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+
+    document.getElementById("scroll-right").addEventListener("click", () => {
+      scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+  });
+
+  
+</script>
+
+{% endblock %}

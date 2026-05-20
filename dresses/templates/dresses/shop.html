@@ -1,0 +1,93 @@
+{% extends 'dresses/base.html' %}
+{% load static %}
+{% block title %}Shop - TariqWorldWide{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">New Arrivals</h2>
+    <form method="get" class="d-flex">
+      <select name="sort" class="form-select me-2" onchange="this.form.submit()">
+        <option value="">Sort By</option>
+        <option value="latest">Latest</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </form>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="mb-4 d-flex gap-3 flex-wrap">
+    {% for cat in categories %}
+      <a href="?category={{ cat.slug }}" class="btn btn-outline-dark btn-sm">{{ cat.name }}</a>
+    {% endfor %}
+  </div>
+<!-- Product Grid -->
+<div class="row">
+  {% for product in products %}
+  <div class="col-md-3 mb-4">
+    <div class="card product-card h-100 position-relative border-0 bg-white overflow-hidden" style="box-shadow: none;">
+
+      <!-- Tag Badge -->
+      {% if product.tag %}
+        <span class="badge bg-dark position-absolute top-0 start-0 m-2">{{ product.tag }}</span>
+      {% endif %}
+
+      <!-- Image Wrapper -->
+      <div class="image-wrapper position-relative overflow-hidden" style="height: 250px;">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}"
+               class="w-100 h-100 zoom-image" style="object-fit: cover; transition: transform 0.3s;">
+        {% else %}
+          <img src="{% static 'img/no-image.png' %}" alt="No Image"
+               class="w-100 h-100 zoom-image" style="object-fit: cover; transition: transform 0.3s;">
+        {% endif %}
+
+        <!-- Hover Add to Cart or SOLD OUT -->
+<div class="hover-btns position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+     style="opacity: 0; background-color: rgba(0, 0, 0, 0.4); transition: opacity 0.3s;">
+  {% if product.stock > 0 %}
+    <form method="POST" action="{% url 'product_detail'  product.slug %}" style="display:inline;">
+  {% csrf_token %}
+  <input type="hidden" name="size" value="{{ size }}">
+  <button type="submit" class="cart-icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+              background: transparent; padding: 12px; border: none; display: none; z-index: 2;">
+    <i class="fa fa-shopping-bag" style="color: black;"></i>
+  </button>
+</form>
+  {% else %}
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                width: 80px; height: 80px; background: rgba(255, 255, 255, 0.8); color: black;
+                border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                border: 3px solid black; font-size: 12px; font-weight: bold; text-align: center; z-index: 2;">
+       SOLD OUT
+    </div>
+  {% endif %}
+</div>
+      </div>
+
+      <!-- Wishlist Icon BELOW Image -->
+      <div class="d-flex justify-content-end mt-2 me-2">
+        <a href="{% url 'add_to_wishlist' product.id %}" 
+           class="text-dark p-1 rounded-circle"
+           style="border: 1px solid #ffffff;">
+          <i class="bi bi-heart"></i>
+        </a>
+      </div>
+
+      <!-- Product Info -->
+      <div class="card-body pt-1 pb-2 px-3">
+        <h6 class="fw-bold mb-1" style="font-size: 14px;">
+          <a href="{% url 'product_detail' product.slug %}" class="text-dark text-decoration-none">
+            {{ product.name }}
+          </a>
+        </h6>
+        <p class="fw-semibold mb-0">Rs. {{ product.price }}</p>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+    <p class="text-muted">No products found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

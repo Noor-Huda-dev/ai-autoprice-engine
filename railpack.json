@@ -1,0 +1,8 @@
+{
+  "build": {
+    "commands": [
+      "pip install setuptools==69.5.1",
+      "pip install --no-build-isolation -r requirements.txt"
+    ]
+  }
+}

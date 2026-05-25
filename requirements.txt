@@ -24,3 +24,4 @@ PyJWT==2.8.0
 cryptography==46.0.4
 cffi==2.0.0
 pycparser==3.0
+

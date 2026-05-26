@@ -36,12 +36,7 @@
           {% if category.name %}
             <div class="category-circle text-center mx-3">
               <a href="{% url 'shop_by_category' category.name|slugify %}" class="text-decoration-none text-dark">
-                {% if category.image %}
-<img class="category-image rounded-circle mb-2"
-     src="{{ category.image.url }}"
-     alt="{{ category.name }}"
-     style="width: 120px; height: 120px; object-fit: cover;">
-{% endif %}
+                <img class="category-image rounded-circle mb-2" src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 120px; height: 120px; object-fit: cover;">
                 <p class="category-link mb-0">{{ category.name }}</p>
               </a>
             </div>
@@ -122,12 +117,10 @@
 
     <!-- Product Image Wrapper -->
     <div class="image-wrapper" style="position: relative; overflow: hidden;">
-      {% if product.image %}
-<img src="{{ product.image.url }}"
-     alt="{{ product.name }}"
-     class="zoom-image"
-     style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
-{% endif %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+           class="zoom-image" 
+           style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+
       {% if product.stock > 0 %}
     <form method="POST" action="{% url 'product_detail'  product.slug %}" style="display:inline;">
   {% csrf_token %}

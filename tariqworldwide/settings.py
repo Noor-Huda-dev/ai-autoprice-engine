@@ -177,3 +177,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://ai-autoprice-engine-production.up.railway.app",
+]

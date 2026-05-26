@@ -25,7 +25,7 @@ def test(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', test),
+    path('', include('dresses.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

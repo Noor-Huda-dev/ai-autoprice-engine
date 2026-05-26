@@ -1,15 +1,8 @@
-# 🤖 AI AutoPrice Engine (In Progress)
+# 🤖 AI AutoPrice Engine 
 
 An intelligent AI-powered pricing system for fashion e-commerce platforms that predicts optimal product prices using Machine Learning.
 
 Built mainly for women’s clothing stores, the system helps businesses automate pricing decisions and maximize revenue through smart AI-driven insights.
-
----
-
-## 🚧 Project Status
-
-> ⚠️ This project is currently under active development.  
-> New features, UI improvements, and advanced AI functionalities are being added continuously.
 
 ---
 

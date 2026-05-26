@@ -90,7 +90,7 @@ ai-autoprice-engine/
 ├── requirements.txt
 ├── db.sqlite3
 └── README.md
-
+```
 ---
 
 # 🧠 How It Works

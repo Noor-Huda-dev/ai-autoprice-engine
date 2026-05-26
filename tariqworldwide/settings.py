@@ -66,8 +66,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -101,7 +99,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #'dresses.context_processors.cart_items_count',
+                'dresses.context_processors.cart_items_count',
 
             ],
             'libraries': {
@@ -180,4 +178,6 @@ import os
 
 CSRF_TRUSTED_ORIGINS = [
     "https://ai-autoprice-engine-production.up.railway.app",
+    "https://*.railway.app",
+
 ]
